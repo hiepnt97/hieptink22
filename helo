@@ -1,0 +1,45 @@
+global _start
+
+section .data
+    msgin db 'Input : '
+	msginlen db $-msgin
+	;msgout db 'Output : '
+	;msgoutlen db $-msgout
+section .bss
+    stri resd 1
+    strilen resd $-stri
+
+section .text
+
+_start:
+    Loop:
+    mov eax, 4          ; Print 100 bytes starting from stri
+    mov ebx, 1          ; |
+    mov ecx, msgin        ; | <- source
+    mov edx, msginlen   ; | <- length
+    int 80h 
+	
+    mov eax, 3          ; Read user input into stri
+    mov ebx, 0          ; |
+    mov ecx, stri        ; | <- destination
+    mov edx, strilen        ; | <- length
+    int 80h
+    mov eax,stri             ; 
+    cmp eax,'exit'
+    je exit
+    ;mov eax, 4          ; Print 100 bytes starting from stri
+    ;mov ebx, 1          ; |
+    ;mov ecx, msgout        ; | <- source
+    ;mov edx, msgoutlen   ; | <- length
+    ;int 80h
+	
+    mov eax, 4          ; Print 100 bytes starting from stri
+    mov ebx, 1          ; |
+    mov ecx, stri        ; | <- source
+    mov edx, strilen   ; | <- length
+    int 80h             ; \
+    jmp Loop
+    exit:
+    mov eax, 1          ; Return
+    mov ebx, 0          ; | <- return code
+    int 80h             ; \
