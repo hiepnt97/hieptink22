@@ -1,0 +1,56 @@
+global _start
+
+section .data
+        msgin db 'Input : '
+	msginlen equ $-msgin
+	msgout db 'Output : '
+	msgoutlen equ $-msgout
+section .bss
+    stri resd 100
+    strilen resd $-stri
+
+section .text
+_start:
+    _loop:
+    mov eax, 4         
+    mov ebx, 1          
+    mov ecx, msgin       
+    mov edx, msginlen  
+    int 80h 
+	
+    mov eax, 3         
+    mov ebx, 0         
+	xor ecx, ecx
+    mov ecx, stri      
+	mov edx, strilen     
+    int 80h
+	
+	push eax
+    ;mov [stri],eax
+    ;cmp stri,'exit'
+    ;je _exit
+
+    mov eax, 4        
+    mov ebx, 1         
+    mov ecx, msgout       
+    mov edx ,msgoutlen 
+    int 80h
+	
+    mov eax, 4         
+    mov ebx, 1          
+    mov ecx, stri       
+    ;mov edx, strilen  
+	pop edx
+    int 80h
+	
+    mov eax,0 
+    xor ebx , ebx
+    mov ebx,0
+    ;mov [stri],eax
+    ;mov [strilen],eax        
+    jmp _loop
+    _exit:
+    mov eax, 1  
+	xor ebx, ebx
+    mov ebx, 0        
+    int 80h           
