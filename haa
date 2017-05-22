@@ -1,0 +1,78 @@
+section .data
+	len db 0
+	found dw "Found",10
+	found_len equ $-found
+	notfound dw "Not Found",10
+	notfound_len equ $-notfound
+section .bss
+	text resb 10
+	text_len equ $-text
+	find resb 10
+	find_len equ $-find
+ 
+section .text
+	global _start
+_start :
+	mov eax, 3
+	mov ebx, 0
+	mov ecx, text
+	mov edx, text_len
+	int 80h
+ 
+ 
+	mov eax, 3
+	mov ebx, 0
+	mov ecx, find
+	mov edx, find_len
+	int 80h
+
+	mov edi,text
+	mov esi,find
+	Loop1:
+		mov al,[edi]
+		mov bl,[esi]
+		cmp byte[edi],10 
+		je _KT1
+		cmp byte[esi],10
+		je _KT2
+
+		cmp al,bl
+		jne Lap1
+		je Lap2
+		jmp Loop1
+
+ 	Lap1:
+ 		inc edi
+ 		mov esi,0
+ 		jmp Loop1
+
+ 	Lap2:
+ 		inc edi
+ 		inc esi
+ 		jmp Loop1
+
+ 	_KT1:
+ 		cmp byte[esi],10
+ 		jne _NotFound
+ 		je _KT2
+
+ 	_KT2:
+ 		mov eax,4
+ 		mov ebx,1
+ 		mov ecx,found
+ 		mov edx,found_len
+ 		int 80h
+ 		jmp _done
+
+ 	_NotFound:
+ 		mov eax,4
+ 		mov ebx,1
+ 		mov ecx,notfound
+ 		mov edx,notfound_len
+ 		int 80h
+ 		jmp _done
+
+	_done:		
+	mov eax,1
+	xor ebx, ebx
+	int 80h
